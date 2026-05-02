@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import DigestArchive from '../components/DigestArchive.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDigestDate, sortDigestsNewestFirst } from '../lib/digests';
+import { withBase } from '../lib/paths';
+
+const digests = sortDigestsNewestFirst(await getCollection('digests'));
+const latest = digests[0];
+const today = new Intl.DateTimeFormat('en', {
+	month: 'long',
+	day: 'numeric',
+	year: 'numeric',
+}).format(new Date());
+---
+
+<BaseLayout>
+	<main class="site-shell">
+		<header class="site-header">
+			<a class="brand" href={withBase('/')}>News Digest</a>
+			<span class="dateline">{today}</span>
+		</header>
+
+		{
+			latest ? (
+				<section class="latest" aria-labelledby="latest-title">
+					<div>
+						<p class="eyebrow">Latest edition</p>
+						<h1 id="latest-title">{latest.title}</h1>
+						<p class="meta">
+							<time datetime={latest.date}>{formatDigestDate(latest.date)}</time>
+						</p>
+						<a class="read-link" href={withBase(latest.href)}>
+							Read the full digest
+						</a>
+					</div>
+					<p class="latest-preview">{latest.excerpt}</p>
+				</section>
+			) : (
+				<section class="empty-state">
+					<p>
+						No digests yet. Add Markdown files to <code>src/digests</code> to start the
+						archive.
+					</p>
+				</section>
+			)
+		}
+
+		<DigestArchive digests={digests} />
+	</main>
+</BaseLayout>

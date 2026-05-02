@@ -1,0 +1,68 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDigestDate, sortDigestsNewestFirst, toDigestSummary } from '../../lib/digests';
+import { withBase } from '../../lib/paths';
+
+export async function getStaticPaths() {
+	const entries = await getCollection('digests');
+
+	return entries.map((entry) => {
+		const digest = toDigestSummary(entry);
+
+		return {
+			params: { date: digest.date },
+			props: { entry },
+		};
+	});
+}
+
+const { entry } = Astro.props;
+const digest = toDigestSummary(entry);
+
+const allDigests = sortDigestsNewestFirst(await getCollection('digests'));
+const currentIndex = allDigests.findIndex((item) => item.date === digest.date);
+const previous = allDigests[currentIndex + 1];
+const next = allDigests[currentIndex - 1];
+---
+
+<BaseLayout title={digest.title} description={`News digest for ${formatDigestDate(digest.date)}`}>
+	<main class="site-shell">
+		<header class="site-header">
+			<a class="brand" href={withBase('/')}>News Digest</a>
+			<a class="back-link" href={withBase('/')}>Archive</a>
+		</header>
+
+		<article class="article">
+			<p class="eyebrow">Daily edition</p>
+			<h1>{digest.title}</h1>
+			<p class="meta">
+				<time datetime={digest.date}>{formatDigestDate(digest.date)}</time>
+			</p>
+			<div class="article-body">
+				<Fragment set:html={digest.bodyHtml} />
+			</div>
+
+			<nav class="digest-nav" aria-label="Digest navigation">
+				<div>
+					{
+						previous && (
+							<a class="back-link" href={withBase(previous.href)}>
+								Previous: {previous.date}
+							</a>
+						)
+					}
+				</div>
+				<div>
+					{
+						next && (
+							<a class="back-link" href={withBase(next.href)}>
+								Next: {next.date}
+							</a>
+						)
+					}
+				</div>
+			</nav>
+		</article>
+	</main>
+</BaseLayout>

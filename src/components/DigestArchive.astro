@@ -1,0 +1,64 @@
+---
+import { formatDigestDate, getArchiveMonths, type DigestSummary } from '../lib/digests';
+import { withBase } from '../lib/paths';
+
+type Props = {
+	digests: DigestSummary[];
+};
+
+const { digests } = Astro.props;
+const months = getArchiveMonths(digests);
+---
+
+<section class="archive" aria-labelledby="archive-title">
+	<div class="archive-heading">
+		<h2 id="archive-title">Archive</h2>
+		{
+			months.length > 0 && (
+				<label class="filter">
+					<span>Filter by month</span>
+					<select data-month-filter>
+						<option value="all">All dates</option>
+						{months.map((month) => (
+							<option value={month.value}>{month.label}</option>
+						))}
+					</select>
+				</label>
+			)
+		}
+	</div>
+
+	{
+		digests.length === 0 ? (
+			<div class="empty-state">
+				<p>
+					No digests yet. Add Markdown files to <code>src/digests</code> to start the
+					archive.
+				</p>
+			</div>
+		) : (
+			<div class="archive-list" data-archive-list>
+				{digests.map((digest) => (
+					<article class="archive-item" data-month={digest.month}>
+						<time datetime={digest.date}>{formatDigestDate(digest.date)}</time>
+						<a href={withBase(digest.href)}>{digest.title}</a>
+					</article>
+				))}
+			</div>
+		)
+	}
+</section>
+
+<script>
+	const filter = document.querySelector<HTMLSelectElement>('[data-month-filter]');
+	const items = Array.from(document.querySelectorAll<HTMLElement>('[data-month]'));
+
+	filter?.addEventListener('change', () => {
+		const selectedMonth = filter.value;
+
+		items.forEach((item) => {
+			const isVisible = selectedMonth === 'all' || item.dataset.month === selectedMonth;
+			item.hidden = !isVisible;
+		});
+	});
+</script>
