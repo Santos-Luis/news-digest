@@ -1,4 +1,11 @@
-Read config/topics.md. For each topic, do a web search to find 2-3 genuinely interesting developments from the last 24-48 hours.
+Topics:
+
+- Software Engineering & Architecture (system design, developer tools, engineering culture)
+- Global Macro & Markets
+- Enterprise AI & AI Strategy
+- AI Tools & Developer Utilities (new Claude-based tools, agent frameworks, AI productivity apps)
+
+For each topic, do a web search to find 2-3 genuinely interesting developments from the last 24-48 hours.
 
 Format:
 📅 Daily Digest — {date}
@@ -11,5 +18,5 @@ Rules:
 - One section per topic, one link per topic
 - Skip topic entirely if nothing significant found
 - No bullet points, no preamble, no sign-off
-- Total length: under 400 words
+- Total length: under 600 words
 - First character must be 📅
