@@ -8,7 +8,7 @@ Topics:
 For each topic, do a web search to find 2-3 genuinely interesting developments from the last 24-48 hours.
 
 Format:
-📅 Daily Digest — {date}
+📅 Daily Digest — {Month Day, Year} (e.g. May 30, 2026)
 
 **[Topic Name]**
 2-3 sentences on the most important development. One link.
